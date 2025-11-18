@@ -35,7 +35,7 @@ int main() {
 
     //testDriver();
 
-    // Initialize edges for graph
+    // Initialize graph
     vector<Edge> edges = {
         {0, 1, 8}, {0, 2, 21},
         {1, 2, 6}, {1, 3, 5}, {1, 4, 4},
@@ -47,20 +47,8 @@ int main() {
 
     Graph graph(edges);
 
-    /*
-    // Print text message connections
-    printTexts(graph);
-    // Perform DFS themed as information spread
-    DFSTexts(graph, 0);
-    // Perform BFS themed as layer-by-layer inspection
-    BFSTexts(graph, 0);
-    // Compute shortest paths from node 0
-    shortestPath(graph, 0);
-    // Compute minimum spanning tree from node 0
-    minimumSpanningTree(graph, 0);
-    */
+    // Menu loop
     int choice;
-    
     do {
         choice = menuTexts();
         switch (choice) {
