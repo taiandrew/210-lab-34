@@ -18,6 +18,7 @@ void testDriver();
 
 void printTexts(Graph const &graph);
 void DFSTexts(Graph const &graph, int start);
+void BFSTexts(Graph const &graph, int start);
 
 
 // --------
@@ -43,6 +44,8 @@ int main() {
     printTexts(graph);
     // Perform DFS themed as information spread
     DFSTexts(graph, 0);
+    // Perform BFS themed as layer-by-layer inspection
+    BFSTexts(graph, 0);
 
 
     return 0;
@@ -225,5 +228,37 @@ void DFSTexts(Graph const &graph, int start) {
         }
         // Add an empty line after finishing each person's neighbors
         cout << endl;
+    }
+}
+
+void BFSTexts(Graph const &graph, int start) {
+    vector<bool> discovered(graph.adjList.size(), false);
+    queue<int> queue;
+
+    cout << "Layer-by-Layer Network Inspection (BFS) from Person " << start << ":" << endl;
+    cout << "Purpose: Analyzing info spread by distance from source" << endl;
+    cout << "=================================================" << endl;
+
+    // Start BFS
+    discovered[start] = true;
+    queue.push(start);
+
+    while (!queue.empty()) {
+        int v = queue.front();
+        queue.pop();
+
+        cout << "Checking Person " << v << endl;
+
+        // Explore all adjacent people
+        for (auto &u : graph.adjList[v]) {
+            if (!discovered[u.first]) {
+                discovered[u.first] = true;
+                queue.push(u.first);
+
+                cout << "  → Next: Person " << u.first
+                     << " - Texts: " << u.second << endl;
+            }
+        }
+        cout << endl;  // Blank line between layers
     }
 }
