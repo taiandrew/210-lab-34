@@ -15,7 +15,9 @@ using namespace std;
 void DFS(Graph const &graph, int v);
 void BFS(Graph const &graph, int v);
 void testDriver();
+
 void printTexts(Graph const &graph);
+void DFSTexts(Graph const &graph, int start);
 
 
 // --------
@@ -39,6 +41,8 @@ int main() {
 
     // Print text message connections
     printTexts(graph);
+    // Perform DFS themed as information spread
+    DFSTexts(graph, 0);
 
 
     return 0;
@@ -170,7 +174,6 @@ void testDriver() {
 
 }
 
-
 void printTexts(Graph const &graph) {
     cout << "Text messages sent/received between people:" << endl;
     cout << "================================" << endl;
@@ -184,5 +187,43 @@ void printTexts(Graph const &graph) {
             cout << "  → Person " << v.first << " (Texts: " << v.second << ")" << endl;
         }
         cout << endl; // Blank line for readability
+    }
+}
+
+void DFSTexts(Graph const &graph, int start) {
+    vector<bool> discovered(graph.adjList.size(), false);
+    stack<int> stack;
+
+    cout << "Network Trace (DFS) from Person " << start << " :" << endl;
+    cout << "Purpose: Tracking possible information spread through the network." << endl;
+    cout << "=======================================" << endl;
+
+    // The starting point
+    cout << "Person " << start << endl;
+
+    // Initialize DFS
+    discovered[start] = true;
+    stack.push(start);
+
+    while (!stack.empty()) {
+        int v = stack.top();
+        stack.pop();
+
+        cout << "From Person " << v << ":" << endl;
+        
+        // Iterate over all adjacent nodes (potential spread points)
+        for (auto &u : graph.adjList[v]) {
+            if (!discovered[u.first]) {
+                discovered[u.first] = true;
+                
+                // Print themed connection status
+                cout << "  → Potential spread to Person " << u.first
+                     << " - Texts: " << u.second << endl;
+
+                stack.push(u.first);
+            }
+        }
+        // Add an empty line after finishing each person's neighbors
+        cout << endl;
     }
 }

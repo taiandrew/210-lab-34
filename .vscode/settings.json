@@ -60,6 +60,7 @@
     "*.erd": "json",
     "*.vuerd": "json",
     "utility": "cpp",
-    "__locale": "cpp"
+    "__locale": "cpp",
+    "iostream": "cpp"
   }
 }
