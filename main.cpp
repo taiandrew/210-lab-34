@@ -1,10 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <stack>
 
 #include "graph.h"
 
 using namespace std;
+
+// Fn prototypes
+void DFS(Graph const &graph, int v, vector<bool> &discovered);
+void DFS(Graph const &graph, int v);
 
 /*
 Graph's adjacency list:
@@ -28,5 +33,39 @@ int main() {
     Graph graph(edges);
     graph.printGraph();
 
+    cout << "Depth First Search (starting from vertex 0): ";
+    DFS(graph, 0);
+    cout << endl;
+
+    
+
     return 0;
+}
+
+
+// DFS implementation via recursion
+// implement using a stack
+void DFS(Graph const &graph, int v) {
+    vector<bool> discovered(graph.adjList.size(), false);
+    stack<int> stack;
+
+    // push the source vertex into the stack
+    stack.push(v);
+    discovered[v] = true;
+
+    while (!stack.empty()) {
+        // pop a vertex from the stack
+        int v = stack.top();
+        stack.pop();
+        cout << v << " ";
+
+        // do for every edge (v, u)
+        for (auto &u : graph.adjList[v]) {
+            if (!discovered[u.first]) {
+                // mark it as discovered and push it into the stack
+                discovered[u.first] = true;
+                stack.push(u.first);
+            }
+        }
+    }
 }
