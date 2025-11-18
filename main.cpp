@@ -21,10 +21,12 @@ void testDriver();
 void printTexts(Graph const &graph);
 void DFSTexts(Graph const &graph, int start);
 void BFSTexts(Graph const &graph, int start);
-
-// Note: don't really have a sensible application with the text theme, but works
+// Note: don't really have a sensible application with the text theme, but functions
 void shortestPath(Graph const &graph, int start);
-void minimumSpanningTree(Graph const &graph, int start);
+void minimumSpanningTree(Graph const &graph);
+
+int menuTexts();
+
 
 // --------
 // Main
@@ -45,6 +47,7 @@ int main() {
 
     Graph graph(edges);
 
+    /*
     // Print text message connections
     printTexts(graph);
     // Perform DFS themed as information spread
@@ -55,7 +58,44 @@ int main() {
     shortestPath(graph, 0);
     // Compute minimum spanning tree from node 0
     minimumSpanningTree(graph, 0);
-
+    */
+    int choice;
+    
+    do {
+        choice = menuTexts();
+        switch (choice) {
+            case 1:
+                printTexts(graph);
+                break;
+            case 2:
+                cout << "Which person to start from? ";
+                int startPerson;
+                cin >> startPerson;
+                DFSTexts(graph, startPerson);
+                break;
+            case 3:
+                cout << "Which person to start from? ";
+                cin >> startPerson;
+                BFSTexts(graph, startPerson);
+                break;
+            case 4:
+                cout << "Which person to start from? ";
+                cin >> startPerson;
+                shortestPath(graph, startPerson);
+                break;
+            case 5:
+                cout << "Which person to start from? ";
+                cin >> startPerson;
+                minimumSpanningTree(graph, startPerson);
+                break;
+            case 6:
+                cout << "Exiting program." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Exiting." << endl;
+                break;
+        }
+   } while (choice != 6);
 
     return 0;
 }
@@ -321,57 +361,76 @@ void shortestPath(Graph const &graph, int start) {
     }
 }
 
-void minimumSpanningTree(Graph const &graph, int start) {
+void minimumSpanningTree(Graph const &graph) {
     int n = graph.adjList.size();
     const int INF = INT_MAX;
 
-    // key[v] = minimum weight edge to connect v to the MST
-    vector<int> key(n, INF);
-    vector<int> parent(n, -1);      // parent[v] in the MST
+    // Prim's arrays
+    vector<int> key(n, INF);        // smallest edge weight to connect v
+    vector<int> parent(n, -1);      // parent of v in MST
     vector<bool> inMST(n, false);   // whether v is already in MST
 
-    // Min-heap of (key value, vertex)
-    typedef pair<int, int> P;
+    using P = pair<int,int>;        // (key, vertex)
     priority_queue<P, vector<P>, greater<P>> pq;
 
-    // Start from `start`
-    key[start] = 0;
-    pq.push(P(0, start));
+    // Handle possibly disconnected graphs:
+    // run Prim starting from every vertex not yet in MST
+    for (int start = 0; start < n; ++start) {
+        if (inMST[start]) continue;
 
-    while (!pq.empty()) {
-        int u = pq.top().second;
-        pq.pop();
+        // start a new tree
+        key[start] = 0;
+        pq.push({0, start});
 
-        if (inMST[u]) continue;
-        inMST[u] = true;
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            pq.pop();
 
-        // Relax all edges from u
-        for (auto const &edge : graph.adjList[u]) {
-            int v = edge.first;
-            int w = edge.second;
+            if (inMST[u]) continue;
+            inMST[u] = true;
 
-            if (!inMST[v] && w < key[v]) {
-                key[v] = w;
-                parent[v] = u;
-                pq.push(P(key[v], v));
+            // relax edges from u
+            for (auto const &edge : graph.adjList[u]) {
+                int v = edge.first;
+                int w = edge.second;
+
+                if (!inMST[v] && w < key[v]) {
+                    key[v] = w;
+                    parent[v] = u;
+                    pq.push({key[v], v});
+                }
             }
         }
     }
 
-    cout << "Minimum Spanning Tree starting from node " << start << ":" << endl;
+    // Print MST (or forest) edges
+    cout << "Minimum Spanning Tree (overall):" << endl;
 
     int totalWeight = 0;
     for (int v = 0; v < n; ++v) {
-        if (v == start) {
+        if (parent[v] == -1) {
+            // root of a tree (could be isolated or a component root)
             cout << "root: " << v << " : 0" << endl;
-        } else if (parent[v] == -1) {
-            // Disconnected vertex (no MST edge found)
-            cout << parent[v] << " -> " << v << " : INF" << endl;
         } else {
             cout << parent[v] << " - " << v << " : " << key[v] << endl;
             totalWeight += key[v];
         }
     }
 
-    cout << "Total weight of MST: " << totalWeight << endl;
+    cout << "Total weight of MST/forest: " << totalWeight << endl;
+}
+
+int menuTexts() {
+    cout << endl;
+    cout << "Menu Options:" << endl;
+    cout << "1. Display text network edges" << endl;
+    cout << "2. Track information paths from source (DFS)" << endl;
+    cout << "3. Check information spread from source (BFS)" << endl;
+    cout << "4. Compute Shortest Paths from a Person" << endl;
+    cout << "5. Compute Minimum Spanning Tree of the Network" << endl;
+    cout << "6. Exit" << endl;
+    cout << "Enter your choice (1-6): ";
+    int choice;
+    cin >> choice;
+    return choice;
 }
