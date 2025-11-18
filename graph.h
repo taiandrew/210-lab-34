@@ -19,8 +19,16 @@ public:
     vector<vector<Pair>> adjList;
     // constructor
     Graph(vector<Edge> const &edges) {
+
+        
         // resize the vector to hold SIZE elements of type vector<Edge>
-        adjList.resize(edges.size());
+        // Find the maximum numbered vertex
+        int maxVertex = 0;
+        for (auto &edge : edges) {
+            maxVertex = max(maxVertex, max(edge.src, edge.dest));
+        }
+        adjList.resize(maxVertex + 1);
+
         // add edges to the directed graph
         for (auto &edge: edges) {
             int src = edge.src;
