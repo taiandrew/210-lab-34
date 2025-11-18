@@ -20,7 +20,6 @@ public:
     // constructor
     Graph(vector<Edge> const &edges) {
 
-        
         // resize the vector to hold SIZE elements of type vector<Edge>
         // Find the maximum numbered vertex
         int maxVertex = 0;

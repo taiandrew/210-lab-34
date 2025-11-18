@@ -15,6 +15,7 @@ using namespace std;
 void DFS(Graph const &graph, int v);
 void BFS(Graph const &graph, int v);
 void testDriver();
+void printTexts(Graph const &graph);
 
 
 // --------
@@ -22,7 +23,23 @@ void testDriver();
 // --------
 int main() {
 
-    testDriver();
+    //testDriver();
+
+    // Initialize edges for graph
+    vector<Edge> edges = {
+        {0, 1, 8}, {0, 2, 21},
+        {1, 2, 6}, {1, 3, 5}, {1, 4, 4},
+        {3, 4, 9},
+        {5, 6, 10}, {5, 7, 15}, {5, 8, 5},
+        {6, 7, 3}, {6, 8, 7},
+        {2, 7, 11}, {2, 8, 8}
+    };
+
+    Graph graph(edges);
+
+    // Print text message connections
+    printTexts(graph);
+
 
     return 0;
 }
@@ -151,4 +168,21 @@ void testDriver() {
     cout << endl;
 
 
+}
+
+
+void printTexts(Graph const &graph) {
+    cout << "Text messages sent/received between people:" << endl;
+    cout << "================================" << endl;
+
+    for (int i = 0; i < graph.adjList.size(); i++) {
+        // Print header for each person
+        cout << "Person " << i << " connects to:" << endl;
+        
+        // Print all connections from this person
+        for (auto &v : graph.adjList[i]) {
+            cout << "  → Person " << v.first << " (Texts: " << v.second << ")" << endl;
+        }
+        cout << endl; // Blank line for readability
+    }
 }

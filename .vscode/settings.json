@@ -59,6 +59,7 @@
   "files.associations": {
     "*.erd": "json",
     "*.vuerd": "json",
-    "utility": "cpp"
+    "utility": "cpp",
+    "__locale": "cpp"
   }
 }
