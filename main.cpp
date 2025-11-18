@@ -6,6 +6,8 @@
 #include <utility>
 #include <stack>
 #include <queue>
+#include <functional>
+#include <climits>
 
 #include "graph.h"
 
@@ -19,6 +21,8 @@ void testDriver();
 void printTexts(Graph const &graph);
 void DFSTexts(Graph const &graph, int start);
 void BFSTexts(Graph const &graph, int start);
+
+void shortestPath(Graph const &graph, int start);
 
 
 // --------
@@ -46,6 +50,9 @@ int main() {
     DFSTexts(graph, 0);
     // Perform BFS themed as layer-by-layer inspection
     BFSTexts(graph, 0);
+
+    // Compute shortest paths from node 0
+    shortestPath(graph, 0);
 
 
     return 0;
@@ -260,5 +267,54 @@ void BFSTexts(Graph const &graph, int start) {
             }
         }
         cout << endl;  // Blank line between layers
+    }
+}
+
+
+void shortestPath(Graph const &graph, int start) {
+    int n = graph.adjList.size();
+    const int INF = INT_MAX;
+
+    // dist[i] = shortest distance from start to i
+    vector<int> dist(n, INF);
+    dist[start] = 0;
+
+    // Min-heap priority queue: (distance, node)
+    typedef pair<int, int> P;
+    priority_queue<P, vector<P>, greater<P>> pq;
+    pq.push(P(0, start));
+
+    while (!pq.empty()) {
+        P current = pq.top();
+        pq.pop();
+
+        int d = current.first;
+        int u = current.second;
+
+        // If we already found a better path, skip
+        if (d > dist[u]) continue;
+
+        // Relax edges out of u
+        for (auto const &edge : graph.adjList[u]) {
+            int v = edge.first;      // neighbor
+            int w = edge.second;     // weight
+
+            if (dist[u] != INF && dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push(P(dist[v], v));
+            }
+        }
+    }
+
+    // Print results
+    cout << "Shortest path from node " << start << ":" << endl;
+    for (int i = 0; i < n; ++i) {
+        cout << start << " -> " << i << " : ";
+        if (dist[i] == INF) {
+            cout << "INF";
+        } else {
+            cout << dist[i];
+        }
+        cout << endl;
     }
 }
