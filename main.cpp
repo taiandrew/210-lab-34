@@ -84,15 +84,13 @@ int main() {
                 shortestPath(graph, startPerson);
                 break;
             case 5:
-                cout << "Which person to start from? ";
-                cin >> startPerson;
-                minimumSpanningTree(graph, startPerson);
+                minimumSpanningTree(graph);
                 break;
             case 6:
                 cout << "Exiting program." << endl;
                 break;
             default:
-                cout << "Invalid choice. Exiting." << endl;
+                cout << "Invalid choice." << endl;
                 break;
         }
    } while (choice != 6);
