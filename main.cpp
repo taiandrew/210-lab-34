@@ -22,8 +22,9 @@ void printTexts(Graph const &graph);
 void DFSTexts(Graph const &graph, int start);
 void BFSTexts(Graph const &graph, int start);
 
+// Note: don't really have a sensible application with the text theme, but works
 void shortestPath(Graph const &graph, int start);
-
+void minimumSpanningTree(Graph const &graph, int start);
 
 // --------
 // Main
@@ -50,9 +51,10 @@ int main() {
     DFSTexts(graph, 0);
     // Perform BFS themed as layer-by-layer inspection
     BFSTexts(graph, 0);
-
     // Compute shortest paths from node 0
     shortestPath(graph, 0);
+    // Compute minimum spanning tree from node 0
+    minimumSpanningTree(graph, 0);
 
 
     return 0;
@@ -317,4 +319,59 @@ void shortestPath(Graph const &graph, int start) {
         }
         cout << endl;
     }
+}
+
+void minimumSpanningTree(Graph const &graph, int start) {
+    int n = graph.adjList.size();
+    const int INF = INT_MAX;
+
+    // key[v] = minimum weight edge to connect v to the MST
+    vector<int> key(n, INF);
+    vector<int> parent(n, -1);      // parent[v] in the MST
+    vector<bool> inMST(n, false);   // whether v is already in MST
+
+    // Min-heap of (key value, vertex)
+    typedef pair<int, int> P;
+    priority_queue<P, vector<P>, greater<P>> pq;
+
+    // Start from `start`
+    key[start] = 0;
+    pq.push(P(0, start));
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        pq.pop();
+
+        if (inMST[u]) continue;
+        inMST[u] = true;
+
+        // Relax all edges from u
+        for (auto const &edge : graph.adjList[u]) {
+            int v = edge.first;
+            int w = edge.second;
+
+            if (!inMST[v] && w < key[v]) {
+                key[v] = w;
+                parent[v] = u;
+                pq.push(P(key[v], v));
+            }
+        }
+    }
+
+    cout << "Minimum Spanning Tree starting from node " << start << ":" << endl;
+
+    int totalWeight = 0;
+    for (int v = 0; v < n; ++v) {
+        if (v == start) {
+            cout << "root: " << v << " : 0" << endl;
+        } else if (parent[v] == -1) {
+            // Disconnected vertex (no MST edge found)
+            cout << parent[v] << " -> " << v << " : INF" << endl;
+        } else {
+            cout << parent[v] << " - " << v << " : " << key[v] << endl;
+            totalWeight += key[v];
+        }
+    }
+
+    cout << "Total weight of MST: " << totalWeight << endl;
 }
