@@ -20,7 +20,7 @@ public:
     // constructor
     Graph(vector<Edge> const &edges) {
         // resize the vector to hold SIZE elements of type vector<Edge>
-        adjList.resize(edges.size() + 1);
+        adjList.resize(edges.size());
         // add edges to the directed graph
         for (auto &edge: edges) {
             int src = edge.src;
