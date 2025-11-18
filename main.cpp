@@ -1,15 +1,19 @@
+// COMSC 210 | Lab 34 | 17 Nov 2025
+// IDE: VS Code
+
 #include <iostream>
 #include <vector>
 #include <utility>
 #include <stack>
+#include <queue>
 
 #include "graph.h"
 
 using namespace std;
 
 // Fn prototypes
-void DFS(Graph const &graph, int v, vector<bool> &discovered);
 void DFS(Graph const &graph, int v);
+void BFS(Graph const &graph, int v);
 
 /*
 Graph's adjacency list:
@@ -33,8 +37,13 @@ int main() {
     Graph graph(edges);
     graph.printGraph();
 
-    cout << "Depth First Search (starting from vertex 0): ";
+    // DFS and BFS of original graph
+    cout << "Depth First Search starting from vertex 0: ";
     DFS(graph, 0);
+    cout << endl;
+
+    cout << "Breadth First Search starting from vertex 0: ";
+    BFS(graph, 0);
     cout << endl;
 
     
@@ -65,6 +74,33 @@ void DFS(Graph const &graph, int v) {
                 // mark it as discovered and push it into the stack
                 discovered[u.first] = true;
                 stack.push(u.first);
+            }
+        }
+    }
+}
+
+// BFS implementation via recursion
+// implement using queue
+void BFS(Graph const &graph, int v) {
+    vector<bool> discovered(graph.adjList.size(), false);
+    queue<int> queue;
+
+    // mark the source vertex as discovered
+    discovered[v] = true;
+    queue.push(v);
+
+    while (!queue.empty()) {
+        // dequeue front vertex and print it
+        v = queue.front();
+        queue.pop();
+        cout << v << " ";
+
+        // do for every edge (v, u)
+        for (auto &u : graph.adjList[v]) {
+            if (!discovered[u.first]) {
+                // mark it as discovered and enqueue it
+                discovered[u.first] = true;
+                queue.push(u.first);
             }
         }
     }
